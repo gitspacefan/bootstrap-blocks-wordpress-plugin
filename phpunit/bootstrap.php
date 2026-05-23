@@ -48,4 +48,4 @@ tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 require $_tests_dir . '/includes/bootstrap.php';
 
 // Load plugin UnitTestCase
-require_once __DIR__ . '/WP_Bootstrap_Blocks_UnitTestCase.class.php';
+require_once __DIR__ . '/wp-bootstrap-blocks-unittestcase.php';
