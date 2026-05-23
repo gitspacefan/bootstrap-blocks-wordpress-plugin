@@ -5,11 +5,10 @@
 	convertErrorsToExceptions="true"
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
-	convertDeprecationsToExceptions="true"
 	>
 	<testsuites>
 		<testsuite name="default">
-			<directory suffix="_Test.class.php">./phpunit/</directory>
+			<directory suffix="-test.php">./phpunit/</directory>
 		</testsuite>
 	</testsuites>
 	<php>
