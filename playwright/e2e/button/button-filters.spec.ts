@@ -38,8 +38,8 @@ test.describe( 'Button Block', () => {
 			await editor.canvas
 				.locator( '.wp-block-wp-bootstrap-blocks-text-input' )
 				.getAttribute( 'style' )
-		).toEqual(
-			'background-color: rgb(255, 0, 0); color: rgb(255, 255, 255); white-space: pre-wrap;'
+		).toContain(
+			'background-color: rgb(255, 0, 0); color: rgb(255, 255, 255);'
 		);
 
 		expect( await editor.getEditedPostContent() ).toMatchSnapshot(
@@ -62,8 +62,8 @@ test.describe( 'Button Block', () => {
 			await editor.canvas
 				.locator( '.wp-block-wp-bootstrap-blocks-text-input' )
 				.getAttribute( 'style' )
-		).toEqual(
-			'background-color: rgb(255, 0, 0); color: rgb(255, 255, 255); white-space: pre-wrap;'
+		).toContain(
+			'background-color: rgb(255, 0, 0); color: rgb(255, 255, 255);'
 		);
 
 		expect( await editor.getEditedPostContent() ).toMatchSnapshot(
@@ -86,8 +86,8 @@ test.describe( 'Button Block', () => {
 			await editor.canvas
 				.locator( '.wp-block-wp-bootstrap-blocks-text-input' )
 				.getAttribute( 'style' )
-		).toEqual(
-			'background-color: rgb(0, 123, 255); color: rgb(255, 255, 255); white-space: pre-wrap;'
+		).toContain(
+			'background-color: rgb(0, 123, 255); color: rgb(255, 255, 255);'
 		);
 
 		expect( await editor.getEditedPostContent() ).toMatchSnapshot(

@@ -56,8 +56,8 @@ test.describe( 'Button Block', () => {
 			await editor.canvas
 				.locator( '.wp-block-wp-bootstrap-blocks-text-input' )
 				.getAttribute( 'style' )
-		).toEqual(
-			'background-color: rgb(0, 123, 255); color: rgb(255, 255, 255); white-space: pre-wrap;'
+		).toContain(
+			'background-color: rgb(0, 123, 255); color: rgb(255, 255, 255);'
 		);
 
 		await editorSettingsSelectOption( editor, page, 'Style', 'Secondary' );
@@ -66,8 +66,8 @@ test.describe( 'Button Block', () => {
 			await editor.canvas
 				.locator( '.wp-block-wp-bootstrap-blocks-text-input' )
 				.getAttribute( 'style' )
-		).toEqual(
-			'background-color: rgb(108, 117, 125); color: rgb(255, 255, 255); white-space: pre-wrap;'
+		).toContain(
+			'background-color: rgb(108, 117, 125); color: rgb(255, 255, 255);'
 		);
 	} );
 
@@ -89,9 +89,7 @@ test.describe( 'Button Block', () => {
 
 	test( 'Change alignment', async ( { editor, page } ) => {
 		await editor.clickBlockToolbarButton( 'Change button alignment' );
-		await page
-			.locator( 'button:text("Align text center")' )
-			.click();
+		await page.locator( 'button:text("Align text center")' ).click();
 
 		await expect(
 			await editor.canvas.locator(

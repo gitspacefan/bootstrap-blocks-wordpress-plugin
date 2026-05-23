@@ -12,7 +12,7 @@ test.describe( 'Row Block Transforms - Custom template enabled', () => {
 		await editor.openDocumentSettingsSidebar();
 	} );
 
-	test( 'Transform two blocks to row block', async ( { editor, page } ) => {
+	test( 'Transform two blocks to row block', async ( { editor } ) => {
 		await editor.insertBlock( {
 			name: 'core/heading',
 		} );
@@ -47,7 +47,7 @@ test.describe( 'Row Block Transforms - Custom template enabled', () => {
 		);
 	} );
 
-	test( 'Transform 3 blocks to row block', async ( { editor, page } ) => {
+	test( 'Transform 3 blocks to row block', async ( { editor } ) => {
 		await editor.insertBlock( {
 			name: 'core/heading',
 		} );
@@ -72,7 +72,7 @@ test.describe( 'Row Block Transforms - Custom template enabled', () => {
 		);
 	} );
 
-	test( 'Transform 4 blocks to row block', async ( { editor, page } ) => {
+	test( 'Transform 4 blocks to row block', async ( { editor } ) => {
 		await editor.insertBlock( {
 			name: 'core/heading',
 		} );
@@ -100,10 +100,7 @@ test.describe( 'Row Block Transforms - Custom template enabled', () => {
 		);
 	} );
 
-	test( 'Columns should not be smaller than 3', async ( {
-		editor,
-		page,
-	} ) => {
+	test( 'Columns should not be smaller than 3', async ( { editor } ) => {
 		await editor.insertBlock( {
 			name: 'core/heading',
 		} );

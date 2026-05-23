@@ -18,7 +18,7 @@ test.describe( 'Row Block', () => {
 		await editor.openDocumentSettingsSidebar();
 	} );
 
-	test( 'Row block is inserted', async ( { editor, page } ) => {
+	test( 'Row block is inserted', async ( { editor } ) => {
 		// Check if row block was inserted
 		await expect(
 			await editor.canvas
