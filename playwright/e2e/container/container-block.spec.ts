@@ -1,6 +1,12 @@
-import { test, expect } from '@wordpress/e2e-test-utils-playwright';
+import { test, expect, Editor } from '@wordpress/e2e-test-utils-playwright';
 
 test.describe( 'Container Block', () => {
+	test.use( {
+		editor: async ( { page }, use ) => {
+			await use( new Editor( { page } ) );
+		},
+	} );
+
 	test.beforeEach( async ( { admin, editor } ) => {
 		await admin.createNewPost();
 		await editor.insertBlock( {

@@ -1,8 +1,14 @@
 import { openSidebarPanelWithTitle } from '../../commands/open-sidebar-panel-with-title';
 
-import { test, expect } from '@wordpress/e2e-test-utils-playwright';
+import { test, expect, Editor } from '@wordpress/e2e-test-utils-playwright';
 
 test.describe( 'Column Block - Filters', () => {
+	test.use( {
+		editor: async ( { page }, use ) => {
+			await use( new Editor( { page } ) );
+		},
+	} );
+
 	test.beforeAll( async ( { requestUtils } ) => {
 		await requestUtils.activatePlugin(
 			'wp-bootstrap-blocks-test-column-filters'
@@ -24,8 +30,8 @@ test.describe( 'Column Block - Filters', () => {
 
 		// Select column block
 		await editor.selectBlocks(
-			page
-				.locator( 'role=document[name="Block: Column (Bootstrap)"i]' )
+			editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/column"]' )
 				.first()
 		);
 	} );
@@ -141,7 +147,7 @@ test.describe( 'Column Block - Filters', () => {
 		// Background color should be selected
 		await openSidebarPanelWithTitle( editor, page, 'Background color' );
 		// There is no way to see which color of a color palette is selected. That's why we check the data attribute value.
-		const firstColumnBlock = await page
+		const firstColumnBlock = await editor.canvas
 			.locator( '[data-type="wp-bootstrap-blocks/column"]' )
 			.first();
 

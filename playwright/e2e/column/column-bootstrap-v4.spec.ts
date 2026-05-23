@@ -1,6 +1,12 @@
-import { test, expect } from '@wordpress/e2e-test-utils-playwright';
+import { test, expect, Editor } from '@wordpress/e2e-test-utils-playwright';
 
 test.describe( 'Column Block - Bootstrap 4', () => {
+	test.use( {
+		editor: async ( { page }, use ) => {
+			await use( new Editor( { page } ) );
+		},
+	} );
+
 	test.beforeAll( async ( { requestUtils } ) => {
 		await requestUtils.activatePlugin(
 			'wp-bootstrap-blocks-test-bootstrap-v4'
@@ -22,8 +28,8 @@ test.describe( 'Column Block - Bootstrap 4', () => {
 
 		// Select column block
 		await editor.selectBlocks(
-			page
-				.locator( 'role=document[name="Block: Column (Bootstrap)"i]' )
+			editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/column"]' )
 				.first()
 		);
 	} );

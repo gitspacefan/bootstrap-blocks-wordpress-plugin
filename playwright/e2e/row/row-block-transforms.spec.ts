@@ -1,6 +1,12 @@
-import { test, expect } from '@wordpress/e2e-test-utils-playwright';
+import { test, expect, Editor } from '@wordpress/e2e-test-utils-playwright';
 
 test.describe( 'Row Block Transforms - Custom template enabled', () => {
+	test.use( {
+		editor: async ( { page }, use ) => {
+			await use( new Editor( { page } ) );
+		},
+	} );
+
 	test.beforeEach( async ( { admin, editor } ) => {
 		await admin.createNewPost();
 		await editor.openDocumentSettingsSidebar();
@@ -15,8 +21,8 @@ test.describe( 'Row Block Transforms - Custom template enabled', () => {
 		} );
 
 		await editor.selectBlocks(
-			page.getByLabel( 'Block: Heading' ).nth( 0 ),
-			page.getByLabel( 'Block: Heading' ).nth( 1 )
+			editor.canvas.getByLabel( 'Block: Heading' ).nth( 0 ),
+			editor.canvas.getByLabel( 'Block: Heading' ).nth( 1 )
 		);
 
 		// Transform selected heading blocks to row
@@ -24,13 +30,13 @@ test.describe( 'Row Block Transforms - Custom template enabled', () => {
 
 		// One row block with 2 columns of size 6 should have been created
 		expect(
-			await page
+			await editor.canvas
 				.getByLabel( 'Block: Column (Bootstrap)' )
 				.nth( 0 )
 				.getAttribute( 'data-size-md' )
 		).toBe( '6' );
 		expect(
-			await page
+			await editor.canvas
 				.getByLabel( 'Block: Column (Bootstrap)' )
 				.nth( 1 )
 				.getAttribute( 'data-size-md' )
@@ -53,8 +59,8 @@ test.describe( 'Row Block Transforms - Custom template enabled', () => {
 		} );
 
 		await editor.selectBlocks(
-			page.getByLabel( 'Block: Heading' ).nth( 0 ),
-			page.getByLabel( 'Block: Heading' ).nth( 2 )
+			editor.canvas.getByLabel( 'Block: Heading' ).nth( 0 ),
+			editor.canvas.getByLabel( 'Block: Heading' ).nth( 2 )
 		);
 
 		// Transform selected heading blocks to row
@@ -81,8 +87,8 @@ test.describe( 'Row Block Transforms - Custom template enabled', () => {
 		} );
 
 		await editor.selectBlocks(
-			page.getByLabel( 'Block: Heading' ).nth( 0 ),
-			page.getByLabel( 'Block: Heading' ).nth( 3 )
+			editor.canvas.getByLabel( 'Block: Heading' ).nth( 0 ),
+			editor.canvas.getByLabel( 'Block: Heading' ).nth( 3 )
 		);
 
 		// Transform selected heading blocks to row
@@ -115,8 +121,8 @@ test.describe( 'Row Block Transforms - Custom template enabled', () => {
 		} );
 
 		await editor.selectBlocks(
-			page.getByLabel( 'Block: Heading' ).nth( 0 ),
-			page.getByLabel( 'Block: Heading' ).nth( 4 )
+			editor.canvas.getByLabel( 'Block: Heading' ).nth( 0 ),
+			editor.canvas.getByLabel( 'Block: Heading' ).nth( 4 )
 		);
 
 		// Transform selected heading blocks to row
@@ -130,6 +136,12 @@ test.describe( 'Row Block Transforms - Custom template enabled', () => {
 } );
 
 test.describe( 'Row Block Transforms - Custom template disabled', () => {
+	test.use( {
+		editor: async ( { page }, use ) => {
+			await use( new Editor( { page } ) );
+		},
+	} );
+
 	test.beforeAll( async ( { requestUtils } ) => {
 		await requestUtils.activatePlugin(
 			'wp-bootstrap-blocks-test-row-filters'
@@ -160,8 +172,8 @@ test.describe( 'Row Block Transforms - Custom template disabled', () => {
 		} );
 
 		await editor.selectBlocks(
-			page.getByLabel( 'Block: Heading' ).nth( 0 ),
-			page.getByLabel( 'Block: Heading' ).nth( 1 )
+			editor.canvas.getByLabel( 'Block: Heading' ).nth( 0 ),
+			editor.canvas.getByLabel( 'Block: Heading' ).nth( 1 )
 		);
 
 		// Transformation to row block should not be available
