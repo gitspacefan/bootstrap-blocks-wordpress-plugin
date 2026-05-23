@@ -3,7 +3,7 @@
  * Plugin Name: Bootstrap Blocks
  * Plugin URI: https://github.com/tschortsch/bootstrap-blocks-wordpress-plugin
  * Description: Bootstrap Gutenberg Blocks for WordPress.
- * Version: 6.0.0
+ * Version: 6.0.1
  * Requires at least: 6.8
  * Requires PHP: 7.4
  * Author: Jürg Hunziker
