@@ -1,7 +1,13 @@
-import { test, expect } from '@wordpress/e2e-test-utils-playwright';
+import { test, expect, Editor } from '@wordpress/e2e-test-utils-playwright';
 
 test.describe( 'Column Block', () => {
-	test.beforeEach( async ( { admin, editor, page } ) => {
+	test.use( {
+		editor: async ( { page }, use ) => {
+			await use( new Editor( { page } ) );
+		},
+	} );
+
+	test.beforeEach( async ( { admin, editor } ) => {
 		await admin.createNewPost();
 		await editor.insertBlock( {
 			name: 'wp-bootstrap-blocks/row',
@@ -10,17 +16,18 @@ test.describe( 'Column Block', () => {
 
 		// Select column block
 		await editor.selectBlocks(
-			page
-				.locator( 'role=document[name="Block: Column (Bootstrap)"i]' )
+			editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/column"]' )
 				.first()
 		);
 	} );
 
 	test( 'Column block is initialized with default attributes', async ( {
+		editor,
 		page,
 	} ) => {
 		// Check if default values are set in data attributes
-		const firstColumnBlock = await page
+		const firstColumnBlock = await editor.canvas
 			.locator( '[data-type="wp-bootstrap-blocks/column"]' )
 			.first();
 
@@ -145,7 +152,7 @@ test.describe( 'Column Block', () => {
 		await page.getByLabel( 'Lg equal-width' ).click();
 
 		// Check if default values are set in data attributes
-		const firstColumnBlock = await page
+		const firstColumnBlock = await editor.canvas
 			.locator( '[data-type="wp-bootstrap-blocks/column"]' )
 			.first();
 
@@ -206,7 +213,7 @@ test.describe( 'Column Block', () => {
 		await page.locator( 'button[aria-label*="secondary"]' ).click();
 
 		// Check if selected background is set in data attribute
-		const firstColumnBlock = await page
+		const firstColumnBlock = await editor.canvas
 			.locator( '[data-type="wp-bootstrap-blocks/column"]' )
 			.first();
 
@@ -235,7 +242,7 @@ test.describe( 'Column Block', () => {
 			.selectOption( 'p-2' );
 
 		// Check if selected background is set in data attribute
-		const firstColumnBlock = await page
+		const firstColumnBlock = await editor.canvas
 			.locator( '[data-type="wp-bootstrap-blocks/column"]' )
 			.first();
 
@@ -255,7 +262,7 @@ test.describe( 'Column Block', () => {
 		await page.locator( 'button:text("Align content bottom")' ).click();
 
 		await expect(
-			page.locator(
+			editor.canvas.locator(
 				'.block-editor-block-list__block[data-type="wp-bootstrap-blocks/column"][data-content-vertical-alignment="bottom"]'
 			)
 		).toBeVisible();
@@ -267,6 +274,12 @@ test.describe( 'Column Block', () => {
 } );
 
 test.describe( 'Column Block - Block inserter', () => {
+	test.use( {
+		editor: async ( { page }, use ) => {
+			await use( new Editor( { page } ) );
+		},
+	} );
+
 	test.beforeEach( async ( { admin } ) => {
 		await admin.createNewPost();
 	} );
@@ -317,7 +330,13 @@ test.describe( 'Column Block - Block inserter', () => {
 } );
 
 test.describe( 'Column Block - Bootstrap 5', () => {
-	test.beforeEach( async ( { admin, editor, page } ) => {
+	test.use( {
+		editor: async ( { page }, use ) => {
+			await use( new Editor( { page } ) );
+		},
+	} );
+
+	test.beforeEach( async ( { admin, editor } ) => {
 		await admin.createNewPost();
 		await editor.insertBlock( {
 			name: 'wp-bootstrap-blocks/row',
@@ -326,8 +345,8 @@ test.describe( 'Column Block - Bootstrap 5', () => {
 
 		// Select column block
 		await editor.selectBlocks(
-			page
-				.locator( 'role=document[name="Block: Column (Bootstrap)"i]' )
+			editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/column"]' )
 				.first()
 		);
 	} );
@@ -366,7 +385,7 @@ test.describe( 'Column Block - Bootstrap 5', () => {
 			.fill( '2' );
 
 		// Check if selected column count is set in data attribute
-		const firstColumnBlock = await page
+		const firstColumnBlock = await editor.canvas
 			.locator( '[data-type="wp-bootstrap-blocks/column"]' )
 			.first();
 

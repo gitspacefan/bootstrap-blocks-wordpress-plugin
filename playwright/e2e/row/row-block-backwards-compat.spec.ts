@@ -4,9 +4,16 @@ import rowContent140 from './fixtures/row-1.4.0';
 import rowContentBootstrap5 from './fixtures/row-bootstrap5';
 import rowContent320CenterContent from './fixtures/row-3.2.0-center-content';
 
-import { test, expect } from '@wordpress/e2e-test-utils-playwright';
+import { test, expect, Editor } from '@wordpress/e2e-test-utils-playwright';
+import { Page } from '@playwright/test';
 
 test.describe( 'Row Block - Backwards compatibility', () => {
+	test.use( {
+		editor: async ( { page }, use ) => {
+			await use( new Editor( { page } ) );
+		},
+	} );
+
 	test.beforeEach( async ( { admin, editor } ) => {
 		await admin.createNewPost();
 		await editor.insertBlock( {
@@ -23,10 +30,14 @@ test.describe( 'Row Block - Backwards compatibility', () => {
 
 		// Row blocks should be successfully inserted
 		expect(
-			await page.$$( '[data-type="wp-bootstrap-blocks/row"]' )
+			await editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/row"]' )
+				.all()
 		).toHaveLength( 2 );
 		expect(
-			await page.$$( '[data-type="wp-bootstrap-blocks/column"]' )
+			await editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/column"]' )
+				.all()
 		).toHaveLength( 4 );
 
 		expect( await editor.getEditedPostContent() ).toMatchSnapshot(
@@ -42,12 +53,15 @@ test.describe( 'Row Block - Backwards compatibility', () => {
 	} ) => {
 		await editor.setContent( rowContent110 );
 
-		// Row blocks should be successfully inserted
 		expect(
-			await page.$$( '[data-type="wp-bootstrap-blocks/row"]' )
+			await editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/row"]' )
+				.all()
 		).toHaveLength( 3 );
 		expect(
-			await page.$$( '[data-type="wp-bootstrap-blocks/column"]' )
+			await editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/column"]' )
+				.all()
 		).toHaveLength( 6 );
 
 		expect( await editor.getEditedPostContent() ).toMatchSnapshot(
@@ -91,19 +105,23 @@ test.describe( 'Row Block - Backwards compatibility', () => {
 
 		// Select 1. Column of 1. Row
 		await editor.selectBlocks(
-			page
-				.locator( 'role=document[name="Block: Row (Bootstrap)"i]' )
-				.locator( 'nth=0' )
-				.locator( 'role=document[name="Block: Column (Bootstrap)"i]' )
-				.locator( 'nth=0' )
+			editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/row"]' )
+				.nth( 0 )
+				.locator( '[data-type="wp-bootstrap-blocks/column"]' )
+				.nth( 0 )
 		);
 
 		// Check if row block could be inserted without error
 		await expect(
-			await page.locator( '[data-type="wp-bootstrap-blocks/row"]' )
+			await editor.canvas.locator(
+				'[data-type="wp-bootstrap-blocks/row"]'
+			)
 		).toBeVisible();
 		await expect(
-			await page.$$( '[data-type="wp-bootstrap-blocks/column"]' )
+			await editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/column"]' )
+				.all()
 		).toHaveLength( 2 );
 
 		// Check if center content option was migrated to content vertical alignment
@@ -123,6 +141,12 @@ test.describe( 'Row Block - Backwards compatibility', () => {
 } );
 
 test.describe( 'Row Block - Backwards compatibility Bootstrap 4', () => {
+	test.use( {
+		editor: async ( { page }, use ) => {
+			await use( new Editor( { page } ) );
+		},
+	} );
+
 	test.beforeAll( async ( { requestUtils } ) => {
 		await requestUtils.activatePlugin(
 			'wp-bootstrap-blocks-test-bootstrap-v4'
@@ -151,19 +175,23 @@ test.describe( 'Row Block - Backwards compatibility Bootstrap 4', () => {
 
 		// Select 1. Column of 1. Row
 		await editor.selectBlocks(
-			page
-				.locator( 'role=document[name="Block: Row (Bootstrap)"i]' )
-				.locator( 'nth=0' )
-				.locator( 'role=document[name="Block: Column (Bootstrap)"i]' )
-				.locator( 'nth=0' )
+			editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/row"]' )
+				.nth( 0 )
+				.locator( '[data-type="wp-bootstrap-blocks/column"]' )
+				.nth( 0 )
 		);
 
 		// Check if row block could be inserted without error
 		await expect(
-			await page.locator( '[data-type="wp-bootstrap-blocks/row"]' )
+			await editor.canvas.locator(
+				'[data-type="wp-bootstrap-blocks/row"]'
+			)
 		).toBeVisible();
 		await expect(
-			await page.$$( '[data-type="wp-bootstrap-blocks/column"]' )
+			await editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/column"]' )
+				.all()
 		).toHaveLength( 2 );
 
 		// Check if Bootstrap 4 values are set in inspector controls
@@ -182,10 +210,10 @@ test.describe( 'Row Block - Backwards compatibility Bootstrap 4', () => {
 	} );
 } );
 
-const testVersion100RowFeatures = async ( editor, page ) => {
+const testVersion100RowFeatures = async ( editor: Editor, page: Page ) => {
 	// Select first row block
 	await editor.selectBlocks(
-		page.locator( 'role=document[name="Block: Row (Bootstrap)"i]' ).first()
+		editor.canvas.locator( '[data-type="wp-bootstrap-blocks/row"]' ).first()
 	);
 
 	// 2:1 template should be selected
@@ -207,9 +235,9 @@ const testVersion100RowFeatures = async ( editor, page ) => {
 
 	// Select 2. Row
 	await editor.selectBlocks(
-		page
-			.locator( 'role=document[name="Block: Row (Bootstrap)"i]' )
-			.locator( 'nth=1' )
+		editor.canvas
+			.locator( '[data-type="wp-bootstrap-blocks/row"]' )
+			.nth( 1 )
 	);
 
 	// Align columns right should be selected
@@ -236,12 +264,12 @@ const testVersion100RowFeatures = async ( editor, page ) => {
 	).toBeVisible();*/
 };
 
-const testVersion110RowFeatures = async ( editor, page ) => {
+const testVersion110RowFeatures = async ( editor: Editor, page: Page ) => {
 	// Select 3. Row
 	await editor.selectBlocks(
-		page
-			.locator( 'role=document[name="Block: Row (Bootstrap)"i]' )
-			.locator( 'nth=2' )
+		editor.canvas
+			.locator( '[data-type="wp-bootstrap-blocks/row"]' )
+			.nth( 2 )
 	);
 
 	// Custom template should be selected
@@ -253,20 +281,20 @@ const testVersion110RowFeatures = async ( editor, page ) => {
 
 	// Column block appender should be visible
 	await expect(
-		page.locator(
+		editor.canvas.locator(
 			'.wp-block-wp-bootstrap-blocks-row > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender'
 		)
 	).toBeVisible();
 };
 
-const testVersion100ColumnFeatures = async ( editor, page ) => {
+const testVersion100ColumnFeatures = async ( editor: Editor, page: Page ) => {
 	// Select 2. Column of 1. Row
 	await editor.selectBlocks(
-		page
-			.locator( 'role=document[name="Block: Row (Bootstrap)"i]' )
-			.locator( 'nth=0' )
-			.locator( 'role=document[name="Block: Column (Bootstrap)"i]' )
-			.locator( 'nth=1' )
+		editor.canvas
+			.locator( '[data-type="wp-bootstrap-blocks/row"]' )
+			.nth( 0 )
+			.locator( '[data-type="wp-bootstrap-blocks/column"]' )
+			.nth( 1 )
 	);
 
 	// Check if default values are set in inspector controls
@@ -307,14 +335,14 @@ const testVersion100ColumnFeatures = async ( editor, page ) => {
 	).toBe( '9' );
 };
 
-const testVersion110ColumnFeatures = async ( editor, page ) => {
+const testVersion110ColumnFeatures = async ( editor: Editor, page: Page ) => {
 	// Select 2. Column of 1. Row
 	await editor.selectBlocks(
-		page
-			.locator( 'role=document[name="Block: Row (Bootstrap)"i]' )
-			.locator( 'nth=0' )
-			.locator( 'role=document[name="Block: Column (Bootstrap)"i]' )
-			.locator( 'nth=1' )
+		editor.canvas
+			.locator( '[data-type="wp-bootstrap-blocks/row"]' )
+			.nth( 0 )
+			.locator( '[data-type="wp-bootstrap-blocks/column"]' )
+			.nth( 1 )
 	);
 
 	// Background color should be selected
@@ -327,9 +355,9 @@ const testVersion110ColumnFeatures = async ( editor, page ) => {
 
 	// There is no way to see which color of a color palette is selected. That's why we check the data attribute value of the second column block.
 	expect(
-		await page
+		await editor.canvas
 			.locator( '[data-type="wp-bootstrap-blocks/column"]' )
-			.locator( 'nth=1' )
+			.nth( 1 )
 			.getAttribute( 'data-bg-color' )
 	).toBe( 'primary' );
 
@@ -359,14 +387,14 @@ const testVersion110ColumnFeatures = async ( editor, page ) => {
 	).toBe( 'p-5' );
 };
 
-const testVersion140ColumnFeatures = async ( editor, page ) => {
+const testVersion140ColumnFeatures = async ( editor: Editor, page: Page ) => {
 	// Select 2. Column of 1. Row
 	await editor.selectBlocks(
-		page
-			.locator( 'role=document[name="Block: Row (Bootstrap)"i]' )
-			.locator( 'nth=0' )
-			.locator( 'role=document[name="Block: Column (Bootstrap)"i]' )
-			.locator( 'nth=1' )
+		editor.canvas
+			.locator( '[data-type="wp-bootstrap-blocks/row"]' )
+			.nth( 0 )
+			.locator( '[data-type="wp-bootstrap-blocks/column"]' )
+			.nth( 1 )
 	);
 
 	// Column equal-width checkboxes should be checked

@@ -1,6 +1,12 @@
-import { test, expect } from '@wordpress/e2e-test-utils-playwright';
+import { test, expect, Editor } from '@wordpress/e2e-test-utils-playwright';
 
 test.describe( 'Row Block', () => {
+	test.use( {
+		editor: async ( { page }, use ) => {
+			await use( new Editor( { page } ) );
+		},
+	} );
+
 	// TODO check why "Change layout" test is flaky
 	test.describe.configure( { retries: 2 } );
 
@@ -12,14 +18,18 @@ test.describe( 'Row Block', () => {
 		await editor.openDocumentSettingsSidebar();
 	} );
 
-	test( 'Row block is inserted', async ( { editor, page } ) => {
+	test( 'Row block is inserted', async ( { editor } ) => {
 		// Check if row block was inserted
 		await expect(
-			await page.$$( '[data-type="wp-bootstrap-blocks/row"]' )
+			await editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/row"]' )
+				.all()
 		).toHaveLength( 1 );
 
 		await expect(
-			await page.$$( '[data-type="wp-bootstrap-blocks/column"]' )
+			await editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/column"]' )
+				.all()
 		).toHaveLength( 2 );
 
 		expect( await editor.getEditedPostContent() ).toMatchSnapshot(
@@ -35,7 +45,7 @@ test.describe( 'Row Block', () => {
 		await page.locator( 'button:text("Align columns right")' ).click();
 
 		await expect(
-			await page.locator(
+			await editor.canvas.locator(
 				'[data-type="wp-bootstrap-blocks/row"][data-alignment="right"]'
 			)
 		).toBeVisible();
@@ -50,7 +60,7 @@ test.describe( 'Row Block', () => {
 		await page.locator( 'button:text("Align columns bottom")' ).click();
 
 		await expect(
-			await page.locator(
+			await editor.canvas.locator(
 				'[data-type="wp-bootstrap-blocks/row"][data-vertical-alignment="bottom"]'
 			)
 		).toBeVisible();
@@ -65,7 +75,9 @@ test.describe( 'Row Block', () => {
 
 		// Layout options should be visible
 		expect(
-			await page.$$( '.wp-bootstrap-blocks-template-selector-button' )
+			await page
+				.locator( '.wp-bootstrap-blocks-template-selector-button' )
+				.all()
 		).toHaveLength( 5 );
 
 		await expect(
@@ -75,9 +87,11 @@ test.describe( 'Row Block', () => {
 		).toBeVisible();
 
 		expect(
-			await page.$$(
-				'[data-type="wp-bootstrap-blocks/column"][data-size-md="6"]'
-			)
+			await editor.canvas
+				.locator(
+					'[data-type="wp-bootstrap-blocks/column"][data-size-md="6"]'
+				)
+				.all()
 		).toHaveLength( 2 );
 
 		// Template should be applied
@@ -89,9 +103,11 @@ test.describe( 'Row Block', () => {
 			.click();
 
 		expect(
-			await page.$$(
-				'[data-type="wp-bootstrap-blocks/column"][data-size-md="4"]'
-			)
+			await editor.canvas
+				.locator(
+					'[data-type="wp-bootstrap-blocks/column"][data-size-md="4"]'
+				)
+				.all()
 		).toHaveLength( 3 );
 
 		expect( await editor.getEditedPostContent() ).toMatchSnapshot(
@@ -122,7 +138,7 @@ test.describe( 'Row Block', () => {
 			.click();
 
 		await expect(
-			await page.locator(
+			await editor.canvas.locator(
 				'.wp-block-wp-bootstrap-blocks-row > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender'
 			)
 		).toBeVisible();
@@ -144,14 +160,16 @@ test.describe( 'Row Block', () => {
 			.click();
 
 		// Add column block by clicking the block list appender
-		await page
+		await editor.canvas
 			.locator(
 				'.wp-block-wp-bootstrap-blocks-row > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender > button'
 			)
 			.click();
 
 		expect(
-			await page.$$( '[data-type="wp-bootstrap-blocks/column"]' )
+			await editor.canvas
+				.locator( '[data-type="wp-bootstrap-blocks/column"]' )
+				.all()
 		).toHaveLength( 3 );
 	} );
 
@@ -183,7 +201,7 @@ test.describe( 'Row Block', () => {
 			.click();
 
 		await expect(
-			await page.locator(
+			await editor.canvas.locator(
 				'[data-type="wp-bootstrap-blocks/row"][data-editor-stack-columns="true"]'
 			)
 		).toBeVisible();

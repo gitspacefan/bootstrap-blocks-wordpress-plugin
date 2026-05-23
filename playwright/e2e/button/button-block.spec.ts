@@ -1,8 +1,14 @@
 import { editorSettingsSelectOption } from '../../commands/editor-settings-select-option';
 
-import { test, expect } from '@wordpress/e2e-test-utils-playwright';
+import { test, expect, Editor } from '@wordpress/e2e-test-utils-playwright';
 
 test.describe( 'Button Block', () => {
+	test.use( {
+		editor: async ( { page }, use ) => {
+			await use( new Editor( { page } ) );
+		},
+	} );
+
 	test.beforeEach( async ( { admin, editor } ) => {
 		await admin.createNewPost();
 		await editor.insertBlock( {
@@ -10,8 +16,8 @@ test.describe( 'Button Block', () => {
 		} );
 	} );
 
-	test( 'Button block should be available', async ( { editor, page } ) => {
-		const buttonBlock = await page.locator(
+	test( 'Button block should be available', async ( { editor } ) => {
+		const buttonBlock = await editor.canvas.locator(
 			'[data-type="wp-bootstrap-blocks/button"]'
 		);
 
@@ -23,7 +29,7 @@ test.describe( 'Button Block', () => {
 	} );
 
 	test( 'Set link url and text', async ( { editor, page } ) => {
-		await page
+		await editor.canvas
 			.locator(
 				'[aria-label="Add text..."].block-editor-rich-text__editable'
 			)
@@ -47,29 +53,27 @@ test.describe( 'Button Block', () => {
 
 	test( 'Style is visible in UI', async ( { editor, page } ) => {
 		expect(
-			await page.getAttribute(
-				'.wp-block-wp-bootstrap-blocks-button',
-				'style'
-			)
-		).toEqual(
+			await editor.canvas
+				.locator( '.wp-block-wp-bootstrap-blocks-text-input' )
+				.getAttribute( 'style' )
+		).toContain(
 			'background-color: rgb(0, 123, 255); color: rgb(255, 255, 255);'
 		);
 
 		await editorSettingsSelectOption( editor, page, 'Style', 'Secondary' );
 
 		expect(
-			await page.getAttribute(
-				'.wp-block-wp-bootstrap-blocks-button',
-				'style'
-			)
-		).toEqual(
+			await editor.canvas
+				.locator( '.wp-block-wp-bootstrap-blocks-text-input' )
+				.getAttribute( 'style' )
+		).toContain(
 			'background-color: rgb(108, 117, 125); color: rgb(255, 255, 255);'
 		);
 	} );
 
 	test( 'Data attributes are added', async ( { editor, page } ) => {
 		await expect(
-			await page.locator(
+			await editor.canvas.locator(
 				'.block-editor-block-list__block[data-type="wp-bootstrap-blocks/button"][data-style="primary"]'
 			)
 		).toBeVisible();
@@ -77,7 +81,7 @@ test.describe( 'Button Block', () => {
 		await editorSettingsSelectOption( editor, page, 'Style', 'Secondary' );
 
 		await expect(
-			await page.locator(
+			await editor.canvas.locator(
 				'.block-editor-block-list__block[data-type="wp-bootstrap-blocks/button"][data-style="secondary"]'
 			)
 		).toBeVisible();
@@ -88,7 +92,7 @@ test.describe( 'Button Block', () => {
 		await page.locator( 'button:text("Align text center")' ).click();
 
 		await expect(
-			await page.locator(
+			await editor.canvas.locator(
 				'.block-editor-block-list__block[data-type="wp-bootstrap-blocks/button"][data-alignment="center"]'
 			)
 		).toBeVisible();

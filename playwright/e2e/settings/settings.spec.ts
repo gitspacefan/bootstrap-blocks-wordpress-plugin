@@ -1,6 +1,12 @@
-import { test, expect } from '@wordpress/e2e-test-utils-playwright';
+import { test, expect, Editor } from '@wordpress/e2e-test-utils-playwright';
 
 test.describe( 'Settings page', () => {
+	test.use( {
+		editor: async ( { page }, use ) => {
+			await use( new Editor( { page } ) );
+		},
+	} );
+
 	test( 'Default values are selected', async ( { admin, page } ) => {
 		await admin.visitAdminPage(
 			'options-general.php?page=wp-bootstrap-blocks_settings'
